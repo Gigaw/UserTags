@@ -1,13 +1,8 @@
 const db = require('../db')
+const {validationResult} = require('express-validator')
+const bcrypt = require('bcryptjs')
 
 class UserController {
-  async createUser(req, res) {
-    const {email, nickname, password} = req.body
-    const query = 'INSERT INTO users (email, password, nickname) values ($1, $2, $3) RETURNING *'
-    const newUser = await db.query(query, [email, password, nickname])
-    res.json(newUser.rows[0])
-  }
-
   async getUsers(req, res) {
     const users = await db.query('SELECT * FROM users')
     res.json(users.rows)
