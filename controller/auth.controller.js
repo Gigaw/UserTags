@@ -8,6 +8,7 @@ const generateAccessToken = (id) => {
   const payload = {
     id
   }
+  console.log('payload', payload)
   return jwt.sign(payload, secret, {expiresIn: '24h'})
 }
 
@@ -36,15 +37,16 @@ class AuthController {
   async login(req, res) {
     try {
       const {email, password} = req.body
-      const user = await db.query('SELECT * FROM users WHERE email = $1', [email])
-      if (!user) {
+      const userData = await db.query('SELECT * FROM users WHERE email = $1', [email])
+      if (!userData) {
         return res.status(400).json({message: 'Пользователь не найден' })
       }
-      const validPassword = await bcrypt.compare(password, user.rows[0].password)
+      const user = userData.rows[0]
+      const validPassword = await bcrypt.compare(password, user.password)
       if (!validPassword) {
         return res.status(400).json({message: 'Неверный пароль'})
       }
-      const token = generateAccessToken(user.id, user.roles)
+      const token = generateAccessToken(user.id)
       return res.json({token})
     } catch (e) {
       console.log('login error', e.message)
