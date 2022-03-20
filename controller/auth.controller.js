@@ -8,7 +8,6 @@ const generateAccessToken = (id) => {
   const payload = {
     id,
   };
-  // console.log("payload", payload);
   return jwt.sign(payload, secret, { expiresIn: "24h" });
 };
 

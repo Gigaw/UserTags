@@ -38,32 +38,22 @@ class TagController {
     }
   }
 
-  async getUserTags(req, res) {
-    try {
-      const { id } = req.user;
-
-      // SELECT
-      //     ut.*,
-      //     t1.name AS home_team_name,
-      //     t2.name AS guest_team_name
-      // FROM
-      //     user_tags AS ut
-      //     INNER JOIN user AS u ON ut.user_id = u.id
-      //     INNER JOIN tag AS t ON ut.tag_id = t.id;
-
-      const query = "";
-    } catch (e) {
-      console.log("get user tags error", e.message);
-      res.status(500).json({ message: "server error" });
-    }
-  }
-
   async deleteTag(req, res) {
     try {
+      const userID = req.user.id;
       const id = req.params.id;
-      const query = "DELETE FROM tags WHERE id = $1";
-      const tags = await db.query(query, [id]);
-      res.json(tags.rows);
+      const tag = await db.query("SELECT * FROM tags WHERE id = $1", [id]);
+      if (!tag.rows[0]) {
+        res.status(404).json({ message: 'not found' });  
+      }
+      if (tag.rows[0].creator == userID) {
+        const deletedTag = await db.query("DELETE FROM tags WHERE id = $1", [
+          id,
+        ]);
+        res.json(deletedTag.rows[0]);
+      } else {
+        res.status(403).json({ message: "no access" });
+      }
     } catch (e) {
       console.log("get tags error", e.message);
       res.status(400).json({ message: e.message });
