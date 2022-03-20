@@ -8,9 +8,7 @@ router.post('/tag', [
   authMiddleware,
   check('name', 'Поле name не должно быть пустым').isLength({min: 1})
 ], tagController.createTag)
-// router.get('/tag/:id', authMiddleware, tagController.getTag)
 router.get('/tag', authMiddleware, tagController.getTags)
 router.delete('/tag/:id', authMiddleware, tagController.deleteTag)
-// router.put('/tag', authMiddleware, tagController.updateTag)
 
 module.exports = router

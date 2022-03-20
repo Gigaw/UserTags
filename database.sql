@@ -9,14 +9,23 @@ create TABLE tags(
 	id SERIAL PRIMARY KEY,
 	creator INTEGER,
 	name VARCHAR(40),
-	sortOrder INTEGER DEFAULT 0,
-	FOREIGN KEY (creator) REFERENCES users (id)
+	sortOrder INTEGER DEFAULT 0
 );
 
--- create TABLE user_tag(
--- 	id SERIAL PRIMARY KEY,
--- 	user_id INTEGER,
--- 	tag_id INTEGER,
--- 	FOREIGN KEY (user_id) REFERENCES users (id),
--- 	FOREIGN KEY (tag_id) REFERENCES tags (id),
+create TABLE user_tags(
+	id SERIAL PRIMARY KEY,
+	user_id INTEGER,
+	tag_id INTEGER
+);
+
+-- CREATE TABLE IF NOT EXISTS public.users(
+--     id integer PRIMARY KEY,
+--     email character varying(255),
+--     password character varying(255),
+--     nickname character varying(255),
 -- );
+
+-- TABLESPACE pg_default;
+
+-- ALTER TABLE public.users
+-- OWNER to postgres;

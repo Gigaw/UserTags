@@ -1,6 +1,4 @@
 const db = require('../db')
-const {validationResult} = require('express-validator')
-const bcrypt = require('bcryptjs')
 
 class UserController {
   async getUsers(req, res) {
@@ -23,10 +21,19 @@ class UserController {
   }
 
   async deleteUser(req, res) {
-    const id = req.params.id
-    const query = 'DELETE FROM users where id = $1'
-    const user = await db.query(query, [id])
-    res.json(user.rows)
+    try {
+      const id = req.params.id
+      const user = req.user;
+      if (user !== id) {
+        res.status(403).json({message: 'you have no rights'}) 
+      }
+      const query = 'DELETE FROM users where id = $1'
+      await db.query(query, [id])
+      res.json({message: 'user deleted'})
+    } catch (e) {
+      console.log('deleteUserError', e.message);
+      res.status(500).json({success: false, message: 'server error'});
+    }
   }
 }
 
